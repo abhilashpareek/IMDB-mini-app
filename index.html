@@ -11,8 +11,7 @@
 			}
 		    $.ajax({
 				url:"http://www.omdbapi.com/?s=" + title + "&yg=0&r=json",
-				success: function(result){
-					var titleJson = JSON.parse(result);
+				success: function(titleJson){
 			
 					if (titleJson.Response != 'undefined' && titleJson.Response == 'False'){
 						console.error('cannot find reference for title: ' + titleJson.Error);
@@ -53,7 +52,7 @@
 			$.ajax({
 				url: "http://www.omdbapi.com/?i=" + imdbTitle + "&r=json",
 				success: function(result2){
-					$("#result")[0].innerHTML = 'imdb rating: ' + JSON.parse(result2).imdbRating;
+					$("#result")[0].innerHTML = 'imdb rating: ' + result2.imdbRating;
 					$("#loading")[0].innerHTML = ''
 				}
 			})
