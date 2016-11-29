@@ -12,7 +12,7 @@
 		    $.ajax({
 				url:"http://www.omdbapi.com/?s=" + title + "&yg=0&r=json",
 				success: function(titleJson){
-			
+					
 					if (titleJson.Response != 'undefined' && titleJson.Response == 'False'){
 						console.error('cannot find reference for title: ' + titleJson.Error);
 						
@@ -21,41 +21,60 @@
 						
 					}else{
 						var candidates = ''
-						
+						var outhtml = ''
 						if (titleJson.Search.length > 0){
 							for (i = 0; i < titleJson.Search.length; i++){
 								var titleJsonObj = titleJson.Search[i];	
-					
-								if (titleJsonObj.Title.toUpperCase() == title.toUpperCase()){
-									_getRating(titleJsonObj.imdbID)
-									return;
-								}
+								var image = titleJsonObj.Poster
+								var mTitle = titleJsonObj.Title
+								var year = titleJsonObj.Year
+								var type = titleJsonObj.Type
+								var id = titleJsonObj.imdbID
+								var rating = _getRating(id)
+								outhtml = outhtml +'<div  style="padding-top: 10px;padding-bottom: 10px;clear:both;">'
+								outhtml = outhtml + '<div  style="margin: 5px;margin-right: 5px;float:left;">'
+								outhtml = outhtml + '<img  style="height: 100px;width: 100px;" bindonce="" src="'+image+'">'
+								outhtml = outhtml + '</div>'
+								outhtml = outhtml + '<div  style="padding-left: 70px;">'
+								outhtml = outhtml + '<div>'
+								outhtml = outhtml + 			'<a  target="_self"  style="font-weight: 600;padding-bottom: 0px;" >Name:'+ mTitle+'</a>'
+								outhtml = outhtml + 	'</div>'
+								outhtml = outhtml + 	'<div>'
+								outhtml = outhtml + 		'<span >Type:' +type+'</span>'
+								outhtml = outhtml + 	'</div>'
+								outhtml = outhtml + 	'<div>'
+								outhtml = outhtml + 		'<span >Year:'+ year+'</span>'
+								outhtml = outhtml + 	'</div>'
+								outhtml = outhtml + 	'<div>'
+								outhtml = outhtml + 		'<span >Rating:'+ rating+'</span>'
+								outhtml = outhtml + 	'</div>'
+								outhtml = outhtml + '</div>'
+								outhtml = outhtml + '<div class="clear"></div>'
+								outhtml = outhtml + '</div>'
 							}
 							
+							
+							$('#result').html(outhtml);
+							$("#loading")[0].innerHTML = ''
 							// get candidates:
-							for (i=0; i < titleJson.Search.length; i++){
-								candidates += titleJson.Search[i].Title + '<br />';
-							}
+							
 						}
 						
-						$("#result")[0].innerHTML = 'No match';
-						if (candidates.length > 0){
-							$("#result")[0].innerHTML += ", did you meas: <br /><br />" + candidates;
-						}
-						$("#loading")[0].innerHTML = ''
+						
 					}
 		    	}
 			});
 		};
-
 		function _getRating(imdbTitle){
+		var result = "";
 			$.ajax({
 				url: "http://www.omdbapi.com/?i=" + imdbTitle + "&r=json",
+				async: false,
 				success: function(result2){
-					$("#result")[0].innerHTML = 'imdb rating: ' + result2.imdbRating;
-					$("#loading")[0].innerHTML = ''
+					result = result2;
 				}
 			})
+			return result.imdbRating;
 		}
 		// ~ API 
 		// ---------------------------------------------------------------------
